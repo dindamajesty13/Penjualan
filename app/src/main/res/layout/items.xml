@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.github.captain_miao.optroundcardview.OptRoundCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardFrame"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="3dp"
+    app:optRoundCardCornerRadius="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/imgCover"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_margin="8dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_cart"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:ignore="UnusedAttribute"
+            android:contentDescription="@string/product_image"/>
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/viewDim"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:alpha="0.4"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="@+id/imgCover"
+            app:layout_constraintEnd_toEndOf="@+id/imgCover"
+            app:layout_constraintStart_toStartOf="@+id/imgCover"
+            app:layout_constraintTop_toTopOf="@+id/imgCover" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/textContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            app:layout_constraintEnd_toEndOf="@+id/imgCover"
+            app:layout_constraintStart_toStartOf="@+id/imgCover"
+            app:layout_constraintTop_toBottomOf="@+id/imgCover">
+
+            <TextView
+                android:id="@+id/tvLine1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/text_line_1"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                app:layout_constraintTop_toTopOf="parent"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"/>
+
+            <TextView
+                android:id="@+id/tvLine2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:text="@string/text_line_2"
+                android:textSize="14sp"
+                app:layout_constraintTop_toBottomOf="@+id/tvLine1"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"/>
+
+            <TextView
+                android:id="@+id/tvLine3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:maxLines="1"
+                android:text="@string/text_line_2"
+                android:textSize="12sp"
+                android:foreground="@drawable/strightthrough"
+                app:layout_constraintTop_toBottomOf="@+id/tvLine2"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.github.captain_miao.optroundcardview.OptRoundCardView>

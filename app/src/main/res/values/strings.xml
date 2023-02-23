@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">Penjualan</string>
+    <string name="checkout">Checkout</string>
+    <string name="title">title</string>
+    <string name="login">Login</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="subtitle">subtitle</string>
+    <string name="price">price</string>
+    <string name="price_unit">price unit</string>
+    <string name="buy">Buy</string>
+    <string name="total">Total:</string>
+    <string name="rp_45_000">Rp. 45.000,-</string>
+    <string name="confirm">Confirm</string>
+    <string name="sign_up">Register</string>
+    <string name="password_confirmation">Password Confirmation</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="product_image">product image</string>
+    <string name="text_line_1">Text Line 1</string>
+    <string name="text_line_2">Text Line 2</string>
+    <string name="hello_user">Hello, User</string>
+    <string name="mau_beli_produk_apa_hari_ini">Mau beli produk apa hari ini?</string>
+    <string name="product">Product</string>
+    <string name="recommendation">Recommendation</string>
+    <string name="dimension">Dimension</string>
+    <string name="logo">Logo</string>
+    <string name="name">name</string>
+    <string name="logout">Logout</string>
+    <string name="inter_have_no_account_info">Don’t have an account?&#160;</string>
+    <string name="inter_have_an_account">Have an account?&#160; </string>
+    <string name="price_view">Price:</string>
+    <string name="dimension_view">Dimension:</string>
+    <string name="discount_view">Discount:</string>
+    <string name="discount">discount</string>
+    <string name="total_price_view">Total Price:</string>
+    <string name="total_price">Total Price</string>
+    <string name="unit_view">Quantity:</string>
+    <string name="unit">Unit</string>
+    <string name="purchase_date">Purchase Date:</string>
+    <string name="date">Date</string>
+    <string name="search">Search</string>
+    <string name="no_product_found">No Product Found!</string>
+</resources>
