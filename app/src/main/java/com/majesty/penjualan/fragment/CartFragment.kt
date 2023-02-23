@@ -1,6 +1,7 @@
 package com.majesty.penjualan.fragment
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.ContentValues
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.majesty.penjualan.R
 import com.majesty.penjualan.adapter.CartAdapter
 import com.majesty.penjualan.database.SaleContract
 import com.majesty.penjualan.database.SaleDbHelper
@@ -38,7 +40,24 @@ class CartFragment : Fragment() {
         getAllCartData()
         getTotalPrice()
 
-        binding.btnConfirm.setOnClickListener { checkOut() }
+        binding.btnConfirm.setOnClickListener {
+            val builder = AlertDialog.Builder(context)
+            builder.setTitle("Checkout")
+            builder.setMessage("Are you sure want to checkout?")
+            builder.setIcon(android.R.drawable.ic_dialog_alert)
+
+            builder.setPositiveButton("Yes"){dialogInterface, which ->
+                checkOut()
+            }
+
+            builder.setNegativeButton("No"){dialogInterface, which ->
+                Toast.makeText(context,"Cancel checkout!",Toast.LENGTH_LONG).show()
+            }
+
+            val alertDialog: AlertDialog = builder.create()
+            alertDialog.setCancelable(false)
+            alertDialog.show()
+        }
 
         return binding.root
     }
@@ -49,25 +68,33 @@ class CartFragment : Fragment() {
         val df = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
         val formattedDate: String = df.format(c)
 
-        for (cart in cartList){
-            val calculatePrice = if (cart.discount!! > 0) {
-                val discountPrice: Int = cart.price!! - (cart.discount!! * cart.price!! / 100)
-                discountPrice * cart.quantity
-            }else {
-                cart.price!! * cart.quantity
+        if (cartList.isNotEmpty()) {
+            for (cart in cartList) {
+                val calculatePrice = if (cart.discount!! > 0) {
+                    val discountPrice: Int = cart.price!! - (cart.discount!! * cart.price!! / 100)
+                    discountPrice * cart.quantity
+                } else {
+                    cart.price!! * cart.quantity
+                }
+                val values = ContentValues().apply {
+                    put(SaleContract.TransactionEntry.COLUMN_PRODUCT_CODE, cart.productCode)
+                    put(SaleContract.TransactionEntry.COLUMN_NAME_USER, cart.user)
+                    put(SaleContract.TransactionEntry.COLUMN_QUANTITY, cart.quantity)
+                    put(SaleContract.TransactionEntry.COLUMN_TOTAL_PRICE, calculatePrice)
+                    put(SaleContract.TransactionEntry.COLUMN_DATE, formattedDate)
+                }
+                db?.insert(SaleContract.TransactionEntry.TABLE_NAME, null, values)
+                db.delete(
+                    SaleContract.CartEntry.TABLE_NAME,
+                    "product_code=?",
+                    arrayOf(cart.productCode)
+                )
+                getAllCartData()
+                getTotalPrice()
             }
-            val values = ContentValues().apply {
-                put(SaleContract.TransactionEntry.COLUMN_PRODUCT_CODE, cart.productCode)
-                put(SaleContract.TransactionEntry.COLUMN_NAME_USER, cart.user)
-                put(SaleContract.TransactionEntry.COLUMN_QUANTITY, cart.quantity)
-                put(SaleContract.TransactionEntry.COLUMN_TOTAL_PRICE, calculatePrice)
-                put(SaleContract.TransactionEntry.COLUMN_DATE, formattedDate)
-            }
-            db?.insert(SaleContract.TransactionEntry.TABLE_NAME, null, values)
-            db.delete(SaleContract.CartEntry.TABLE_NAME, "product_code=?", arrayOf(cart.productCode))
-            getAllCartData()
-            getTotalPrice()
-            Toast.makeText(context, "successful transaction", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "successful transaction!", Toast.LENGTH_SHORT).show()
+        }else{
+            Toast.makeText(context, "no item in card!", Toast.LENGTH_SHORT).show()
         }
         db.close()
     }

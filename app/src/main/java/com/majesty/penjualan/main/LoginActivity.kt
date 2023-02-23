@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.InputType
 import android.text.Spannable
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
@@ -24,6 +25,7 @@ import com.majesty.penjualan.databinding.ActivityLoginBinding
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private var dbHelper: SaleDbHelper? = null
+    private var isPasswordVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +36,7 @@ class LoginActivity : AppCompatActivity() {
 
         binding.btnLogin.setOnClickListener{goLogin()}
         setupRegisterText()
+        binding.btnEye.setOnClickListener { onEyeClick() }
     }
 
     private fun goLogin() {
@@ -42,6 +45,19 @@ class LoginActivity : AppCompatActivity() {
 
         checkUserLoggedIn(username, password)
     }
+    private fun onEyeClick() {
+        if (isPasswordVisible) {
+            isPasswordVisible = false
+            binding.btnEye.alpha = 0.25f
+            binding.password.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            binding.password.setSelection(binding.password.length())
+        } else {
+            isPasswordVisible = true
+            binding.btnEye.alpha = 0.75f
+            binding.password.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            binding.password.setSelection(binding.password.length())
+        }
+    }
 
     private fun checkUserLoggedIn(username: String, password: String) {
         val db = dbHelper!!.readableDatabase
@@ -49,7 +65,7 @@ class LoginActivity : AppCompatActivity() {
         if (cursor.count == 1) {
             if (cursor.moveToFirst()) {
                 val userUsername =
-                    cursor.getString(cursor.getColumnIndexOrThrow(SaleContract.LoginEntry.COLUMN_NAME_USER))
+                    cursor.getString(cursor.getColumnIndexOrThrow(SaleContract.LoginEntry.COLUMN_USERNAME))
                 val userPassword =
                     cursor.getString(cursor.getColumnIndexOrThrow(SaleContract.LoginEntry.COLUMN_NAME_PASSWORD))
                 if (username == userUsername) {
@@ -94,12 +110,5 @@ class LoginActivity : AppCompatActivity() {
         span.setSpan(ForegroundColorSpan(Color.BLUE), info.length, span.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         binding.btnSignUp.text = span
         binding.btnSignUp.movementMethod = LinkMovementMethod.getInstance()
-    }
-
-    private fun getColorAttr(context: Context, attrId: Int): Int {
-        val typedValue = TypedValue()
-        val themes = context.theme
-        themes.resolveAttribute(attrId, typedValue, true)
-        return typedValue.data
     }
 }

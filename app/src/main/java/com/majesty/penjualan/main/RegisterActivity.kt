@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.InputType
 import android.text.Spannable
 import android.text.Spanned
 import android.text.method.LinkMovementMethod
@@ -15,7 +16,6 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
-import android.util.TypedValue
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -46,7 +46,7 @@ class RegisterActivity : AppCompatActivity() {
         insertProductToDatabase()
 
         prefs = customPreference(this, LOGIN_PREFERENCE)
-        if (prefs!!.username != "") {
+        if (prefs!!.username.toString() != "") {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
@@ -55,6 +55,23 @@ class RegisterActivity : AppCompatActivity() {
             goRegister()
         }
         setupLoginText()
+
+        binding.btnEye.setOnClickListener { onEyeClick() }
+        binding.btnEyePassword.setOnClickListener { onEyeClickRetype() }
+    }
+
+    private fun onEyeClickRetype() {
+        if (isPasswordVisible) {
+            isPasswordVisible = false
+            binding.btnEyePassword.alpha = 0.25f
+            binding.retypePassword.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            binding.retypePassword.setSelection(binding.retypePassword.length())
+        } else {
+            isPasswordVisible = true
+            binding.btnEyePassword.alpha = 0.75f
+            binding.retypePassword.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            binding.retypePassword.setSelection(binding.retypePassword.length())
+        }
     }
 
     @SuppressLint("Recycle")
@@ -217,11 +234,20 @@ class RegisterActivity : AppCompatActivity() {
         binding.btnLogin.movementMethod = LinkMovementMethod.getInstance()
     }
 
-    private fun getColorAttr(context: Context, attrId: Int): Int {
-        val typedValue = TypedValue()
-        val themes = context.theme
-        themes.resolveAttribute(attrId, typedValue, true)
-        return typedValue.data
+    private var isPasswordVisible = false
+
+    private fun onEyeClick() {
+        if (isPasswordVisible) {
+            isPasswordVisible = false
+            binding.btnEye.alpha = 0.25f
+            binding.password.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            binding.password.setSelection(binding.password.length())
+        } else {
+            isPasswordVisible = true
+            binding.btnEye.alpha = 0.75f
+            binding.password.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+            binding.password.setSelection(binding.password.length())
+        }
     }
 
     object PreferenceHelper {
@@ -258,7 +284,8 @@ class RegisterActivity : AppCompatActivity() {
             get() = run { }
             set(value) {
                 editMe {
-                    it.clear()
+                    it.remove(USERNAME)
+                    it.remove(NAME)
                 }
             }
     }

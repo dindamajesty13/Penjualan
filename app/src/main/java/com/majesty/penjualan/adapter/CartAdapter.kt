@@ -1,5 +1,6 @@
 package com.majesty.penjualan.adapter
 
+import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Context
 import android.view.LayoutInflater
@@ -80,14 +81,45 @@ class CartAdapter(val context: Context, listCart: ArrayList<Cart>, dbHelper: Sal
             val quantity = Integer.parseInt(holder.tvDisplay.text.toString()) - 1
             holder.tvDisplay.text = quantity.toString()
             updateCart(cart.productCode, cart.user, quantity)
-            holder.tvPrice.text = "Rp" + updatePrice(cart.discount!!, quantity, cart.price!!).toString()
+            holder.tvPrice.text = "Rp" + decimalFormat.format(updatePrice(cart.discount!!, quantity, cart.price!!)).toString()
+            if (quantity == 0){
+                deleteCart(cart.productCode)
+            }
         }
         holder.increment.setOnClickListener {
             val quantity = Integer.parseInt(holder.tvDisplay.text.toString()) + 1
             holder.tvDisplay.text = quantity.toString()
             updateCart(cart.productCode, cart.user, quantity)
-            holder.tvPrice.text = "Rp" + updatePrice(cart.discount!!, quantity, cart.price!!).toString()
+            holder.tvPrice.text = "Rp" + decimalFormat.format(updatePrice(cart.discount!!, quantity, cart.price!!)).toString()
+            if (quantity == 0){
+                deleteCart(cart.productCode)
+            }
         }
+    }
+
+    private fun deleteCart(productCode: String) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Delete")
+        builder.setMessage("Are you sure want to delete this?")
+        builder.setIcon(android.R.drawable.ic_dialog_alert)
+
+        builder.setPositiveButton("Yes"){dialogInterface, which ->
+            val db = dbHelper.writableDatabase
+            db.delete(
+                SaleContract.CartEntry.TABLE_NAME,
+                "product_code=?",
+                arrayOf(productCode)
+            )
+            db.close()
+        }
+
+        builder.setNegativeButton("No"){dialogInterface, which ->
+            Toast.makeText(context,"Cancel checkout!",Toast.LENGTH_LONG).show()
+        }
+
+        val alertDialog: AlertDialog = builder.create()
+        alertDialog.setCancelable(false)
+        alertDialog.show()
     }
 
     private fun updateCart(productCode: String, username: String, quantity: Int) {
