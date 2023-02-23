@@ -66,9 +66,9 @@ class CartFragment : Fragment() {
             db.delete(SaleContract.CartEntry.TABLE_NAME, "product_code=?", arrayOf(cart.productCode))
             getAllCartData()
             getTotalPrice()
+            Toast.makeText(context, "successful transaction", Toast.LENGTH_SHORT).show()
         }
         db.close()
-        Toast.makeText(context, "successful transaction", Toast.LENGTH_SHORT).show()
     }
 
 
