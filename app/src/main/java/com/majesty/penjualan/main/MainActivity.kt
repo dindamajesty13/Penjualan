@@ -1,8 +1,10 @@
 package com.majesty.penjualan.main
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.SharedPreferences.Editor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -13,21 +15,16 @@ import com.majesty.penjualan.databinding.ActivityMainBinding
 import com.majesty.penjualan.fragment.CartFragment
 import com.majesty.penjualan.fragment.HistoryFragment
 import com.majesty.penjualan.fragment.HomeFragment
-import com.majesty.penjualan.main.RegisterActivity.PreferenceHelper.clearValues
-import com.majesty.penjualan.main.RegisterActivity.PreferenceHelper.customPreference
 
 class MainActivity : AppCompatActivity() {
     private val LOGIN_PREFERENCE: String = "login_preference"
     private lateinit var binding: ActivityMainBinding
-    private var prefs: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         loadFragment(HomeFragment())
-
-        prefs = customPreference(this, LOGIN_PREFERENCE)
 
         binding.bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
@@ -62,7 +59,10 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.logout -> {
-                prefs!!.clearValues
+                val pref = getSharedPreferences(LOGIN_PREFERENCE, Context.MODE_PRIVATE)
+                val editor: Editor  = pref.edit()
+                editor.clear()
+                editor.apply()
                 startActivity(Intent(this, LoginActivity::class.java))
                 finish()
             }

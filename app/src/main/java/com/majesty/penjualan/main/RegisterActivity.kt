@@ -280,13 +280,5 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
 
-        var SharedPreferences.clearValues
-            get() = run { }
-            set(value) {
-                editMe {
-                    it.remove(USERNAME)
-                    it.remove(NAME)
-                }
-            }
     }
 }
