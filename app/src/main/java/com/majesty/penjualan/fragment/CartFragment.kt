@@ -1,5 +1,6 @@
 package com.majesty.penjualan.fragment
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -72,6 +73,7 @@ class CartFragment : Fragment() {
     }
 
 
+    @SuppressLint("Recycle")
     private fun getAllCartData() {
         val db = dbHelper!!.readableDatabase
         val user = "dinda"
