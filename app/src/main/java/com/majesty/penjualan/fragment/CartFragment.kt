@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.majesty.penjualan.R
 import com.majesty.penjualan.adapter.CartAdapter
 import com.majesty.penjualan.database.SaleContract
@@ -21,7 +22,7 @@ import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CartFragment : Fragment() {
+class CartFragment : Fragment(), CartAdapter.Callbacks{
     private lateinit var binding: FragmentCartBinding
     private var dbHelper: SaleDbHelper? = null
     private lateinit var cartList: ArrayList<Cart>
@@ -29,6 +30,13 @@ class CartFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dbHelper = context?.let { SaleDbHelper(it) }
+    }
+
+    override fun quantityChange(isChange: Boolean) {
+        if (isChange) {
+            getAllCartData()
+            getTotalPrice()
+        }
     }
 
     override fun onCreateView(
@@ -99,7 +107,6 @@ class CartFragment : Fragment() {
         db.close()
     }
 
-
     @SuppressLint("Recycle", "NotifyDataSetChanged")
     private fun getAllCartData() {
         val db = dbHelper!!.readableDatabase
@@ -126,7 +133,13 @@ class CartFragment : Fragment() {
             // RecyclerView behavior
             layoutManager = LinearLayoutManager(activity)
             // set the custom adapter to the RecyclerView
-            adapter = CartAdapter(context, cartList, dbHelper!!)
+            adapter = CartAdapter(context, cartList, dbHelper!!, this@CartFragment)
+            adapter!!.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver(){
+                override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+                    getTotalPrice()
+                }
+
+            })
         }
     }
 

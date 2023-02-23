@@ -20,7 +20,7 @@ import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import kotlin.collections.ArrayList
 
-class CartAdapter(val context: Context, listCart: ArrayList<Cart>, dbHelper: SaleDbHelper) : RecyclerView.Adapter<CartAdapter.ViewHolder>() {
+class CartAdapter(val context: Context, listCart: ArrayList<Cart>, dbHelper: SaleDbHelper, private val handler: CartAdapter.Callbacks) : RecyclerView.Adapter<CartAdapter.ViewHolder>() {
 
     private var listCart: ArrayList<Cart>
     private var dbHelper: SaleDbHelper
@@ -85,6 +85,7 @@ class CartAdapter(val context: Context, listCart: ArrayList<Cart>, dbHelper: Sal
             if (quantity == 0){
                 deleteCart(cart.productCode, holder)
             }
+            handler.quantityChange(true)
         }
         holder.increment.setOnClickListener {
             val quantity = Integer.parseInt(holder.tvDisplay.text.toString()) + 1
@@ -94,7 +95,11 @@ class CartAdapter(val context: Context, listCart: ArrayList<Cart>, dbHelper: Sal
             if (quantity == 0){
                 deleteCart(cart.productCode, holder)
             }
+            handler.quantityChange(true)
         }
+    }
+    interface Callbacks {
+        fun quantityChange(isChange: Boolean)
     }
 
     private fun deleteCart(productCode: String, holder: ViewHolder) {
@@ -145,13 +150,5 @@ class CartAdapter(val context: Context, listCart: ArrayList<Cart>, dbHelper: Sal
             price * quantity
         }
         return totalPrice
-    }
-
-    private fun getQuantity(productCode: String): Int {
-        val db = dbHelper.readableDatabase
-        val cursor = db.rawQuery("select quantity from "+ SaleContract.CartEntry.TABLE_NAME + " where Product_code="+"'"+productCode+"'", null)
-        if (cursor.moveToFirst())
-            return cursor.getInt(cursor.getColumnIndexOrThrow(SaleContract.CartEntry.COLUMN_QUANTITY))
-        return 1
     }
 }
