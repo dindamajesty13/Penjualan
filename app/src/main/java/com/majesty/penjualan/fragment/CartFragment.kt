@@ -100,7 +100,7 @@ class CartFragment : Fragment() {
     }
 
 
-    @SuppressLint("Recycle")
+    @SuppressLint("Recycle", "NotifyDataSetChanged")
     private fun getAllCartData() {
         val db = dbHelper!!.readableDatabase
         val user = "dinda"

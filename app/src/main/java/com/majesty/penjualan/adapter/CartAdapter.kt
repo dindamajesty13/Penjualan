@@ -83,7 +83,7 @@ class CartAdapter(val context: Context, listCart: ArrayList<Cart>, dbHelper: Sal
             updateCart(cart.productCode, cart.user, quantity)
             holder.tvPrice.text = "Rp" + decimalFormat.format(updatePrice(cart.discount!!, quantity, cart.price!!)).toString()
             if (quantity == 0){
-                deleteCart(cart.productCode)
+                deleteCart(cart.productCode, holder)
             }
         }
         holder.increment.setOnClickListener {
@@ -92,12 +92,12 @@ class CartAdapter(val context: Context, listCart: ArrayList<Cart>, dbHelper: Sal
             updateCart(cart.productCode, cart.user, quantity)
             holder.tvPrice.text = "Rp" + decimalFormat.format(updatePrice(cart.discount!!, quantity, cart.price!!)).toString()
             if (quantity == 0){
-                deleteCart(cart.productCode)
+                deleteCart(cart.productCode, holder)
             }
         }
     }
 
-    private fun deleteCart(productCode: String) {
+    private fun deleteCart(productCode: String, holder: ViewHolder) {
         val builder = AlertDialog.Builder(context)
         builder.setTitle("Delete")
         builder.setMessage("Are you sure want to delete this?")
@@ -111,6 +111,9 @@ class CartAdapter(val context: Context, listCart: ArrayList<Cart>, dbHelper: Sal
                 arrayOf(productCode)
             )
             db.close()
+
+            listCart.removeAt(holder.adapterPosition)
+            notifyItemRemoved(holder.adapterPosition)
         }
 
         builder.setNegativeButton("No"){dialogInterface, which ->
