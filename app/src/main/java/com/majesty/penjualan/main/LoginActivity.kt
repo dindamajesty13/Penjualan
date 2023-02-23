@@ -2,6 +2,7 @@ package com.majesty.penjualan.main
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -21,11 +22,15 @@ import com.majesty.penjualan.R
 import com.majesty.penjualan.database.SaleContract
 import com.majesty.penjualan.database.SaleDbHelper
 import com.majesty.penjualan.databinding.ActivityLoginBinding
+import com.majesty.penjualan.main.RegisterActivity.PreferenceHelper.name
+import com.majesty.penjualan.main.RegisterActivity.PreferenceHelper.username
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private var dbHelper: SaleDbHelper? = null
     private var isPasswordVisible = false
+    private var prefs: SharedPreferences? = null
+    private val LOGIN_PREFERENCE: String = "login_preference"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,6 +38,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         dbHelper = SaleDbHelper(applicationContext)
+        prefs = RegisterActivity.PreferenceHelper.customPreference(this, LOGIN_PREFERENCE)
 
         binding.btnLogin.setOnClickListener{goLogin()}
         setupRegisterText()
@@ -64,12 +70,16 @@ class LoginActivity : AppCompatActivity() {
         val cursor = db.rawQuery("select * from "+ SaleContract.LoginEntry.TABLE_NAME + " where user="+"'"+username+"' LIMIT 1", null)
         if (cursor.count == 1) {
             if (cursor.moveToFirst()) {
+                val userName =
+                    cursor.getString(cursor.getColumnIndexOrThrow(SaleContract.LoginEntry.COLUMN_NAME_USER))
                 val userUsername =
                     cursor.getString(cursor.getColumnIndexOrThrow(SaleContract.LoginEntry.COLUMN_USERNAME))
                 val userPassword =
                     cursor.getString(cursor.getColumnIndexOrThrow(SaleContract.LoginEntry.COLUMN_NAME_PASSWORD))
                 if (username == userUsername) {
                     if (password == userPassword) {
+                        prefs!!.name = userName
+                        prefs!!.username = userUsername
                         startActivity(Intent(this, MainActivity::class.java))
                     } else {
                         Toast.makeText(applicationContext, "Wrong Password", Toast.LENGTH_SHORT)
