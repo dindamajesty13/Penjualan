@@ -1,5 +1,6 @@
 package com.majesty.penjualan.fragment
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,9 @@ import com.majesty.penjualan.adapter.TransactionAdapter
 import com.majesty.penjualan.database.SaleContract
 import com.majesty.penjualan.database.SaleDbHelper
 import com.majesty.penjualan.databinding.FragmentHistoryBinding
+import com.majesty.penjualan.main.RegisterActivity
+import com.majesty.penjualan.main.RegisterActivity.PreferenceHelper.customPreference
+import com.majesty.penjualan.main.RegisterActivity.PreferenceHelper.username
 import com.majesty.penjualan.model.Transaction
 import kotlin.collections.ArrayList
 
@@ -17,6 +21,8 @@ class HistoryFragment : Fragment() {
     private lateinit var binding: FragmentHistoryBinding
     private var dbHelper: SaleDbHelper? = null
     private lateinit var transactionList: ArrayList<Transaction>
+    private var prefs: SharedPreferences? = null
+    private val LOGIN_PREFERENCE: String = "login_preference"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,6 +35,7 @@ class HistoryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHistoryBinding.inflate(inflater, container, false)
+        prefs = customPreference(requireContext(), LOGIN_PREFERENCE)
 
         getAllHistoryData()
 
@@ -37,8 +44,7 @@ class HistoryFragment : Fragment() {
 
     private fun getAllHistoryData() {
         val db = dbHelper!!.readableDatabase
-        val user = "dinda"
-        val cursor = db.rawQuery("select * from " + SaleContract.TransactionEntry.TABLE_NAME + " where user="+"'"+user+"'", null)
+        val cursor = db.rawQuery("select * from " + SaleContract.TransactionEntry.TABLE_NAME + " where user="+"'"+prefs!!.username+"'", null)
         transactionList = ArrayList()
 
         if (cursor.moveToFirst()) {
