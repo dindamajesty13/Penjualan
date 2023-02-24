@@ -81,6 +81,7 @@ class LoginActivity : AppCompatActivity() {
                         prefs!!.name = userName
                         prefs!!.username = userUsername
                         startActivity(Intent(this, MainActivity::class.java))
+                        finish()
                     } else {
                         Toast.makeText(applicationContext, "Wrong Password", Toast.LENGTH_SHORT)
                             .show()

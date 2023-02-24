@@ -3,6 +3,7 @@ package com.majesty.penjualan.fragment
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,9 @@ import com.majesty.penjualan.adapter.CartAdapter
 import com.majesty.penjualan.database.SaleContract
 import com.majesty.penjualan.database.SaleDbHelper
 import com.majesty.penjualan.databinding.FragmentCartBinding
+import com.majesty.penjualan.main.RegisterActivity
+import com.majesty.penjualan.main.RegisterActivity.PreferenceHelper.customPreference
+import com.majesty.penjualan.main.RegisterActivity.PreferenceHelper.username
 import com.majesty.penjualan.model.Cart
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -26,10 +30,13 @@ class CartFragment : Fragment(), CartAdapter.Callbacks{
     private lateinit var binding: FragmentCartBinding
     private var dbHelper: SaleDbHelper? = null
     private lateinit var cartList: ArrayList<Cart>
+    private var prefs: SharedPreferences? = null
+    private val LOGIN_PREFERENCE: String = "login_preference"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dbHelper = context?.let { SaleDbHelper(it) }
+        prefs = customPreference(requireContext(), LOGIN_PREFERENCE)
     }
 
     override fun quantityChange(isChange: Boolean) {
@@ -110,8 +117,7 @@ class CartFragment : Fragment(), CartAdapter.Callbacks{
     @SuppressLint("Recycle", "NotifyDataSetChanged")
     private fun getAllCartData() {
         val db = dbHelper!!.readableDatabase
-        val user = "dinda"
-        val cursor = db.rawQuery("select * from " + SaleContract.CartEntry.TABLE_NAME + " where user="+"'"+user+"'", null)
+        val cursor = db.rawQuery("select * from " + SaleContract.CartEntry.TABLE_NAME + " where user="+"'"+prefs!!.username+"'", null)
         cartList = ArrayList()
 
         if (cursor.moveToFirst()) {

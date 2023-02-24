@@ -84,17 +84,15 @@ class CartAdapter(val context: Context, listCart: ArrayList<Cart>, dbHelper: Sal
             holder.tvPrice.text = "Rp" + decimalFormat.format(updatePrice(cart.discount!!, quantity, cart.price!!)).toString()
             if (quantity == 0){
                 deleteCart(cart.productCode, holder)
+            }else {
+                handler.quantityChange(true)
             }
-            handler.quantityChange(true)
         }
         holder.increment.setOnClickListener {
             val quantity = Integer.parseInt(holder.tvDisplay.text.toString()) + 1
             holder.tvDisplay.text = quantity.toString()
             updateCart(cart.productCode, cart.user, quantity)
             holder.tvPrice.text = "Rp" + decimalFormat.format(updatePrice(cart.discount!!, quantity, cart.price!!)).toString()
-            if (quantity == 0){
-                deleteCart(cart.productCode, holder)
-            }
             handler.quantityChange(true)
         }
     }
@@ -116,7 +114,6 @@ class CartAdapter(val context: Context, listCart: ArrayList<Cart>, dbHelper: Sal
                 arrayOf(productCode)
             )
             db.close()
-
             listCart.removeAt(holder.adapterPosition)
             notifyItemRemoved(holder.adapterPosition)
         }
